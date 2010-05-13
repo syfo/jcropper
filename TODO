@@ -1,0 +1,20 @@
+- make helper a FormHelper
+- support for multiple crops per model
+- support for more than just paperclip
+  - decouple to paperclip
+  - what others to support?
+- test with latest jquery as well as 1.3.1  
+- write tests, of course
+- what should the syntax be for including in a model?
+  a) simply be adding a style with :processor => 'jcropper', its added to the model
+  b) js_crop :icon, :style => { ... } mirrors paperclip options, and ADDS that style to the preexisting paperclip options
+  c) maybe you add a style with whatever processor, then js_crop :ikon, :style_name overrides that style
+
+- syntax for view helpers?
+  - editable image
+  - previewable image?
+- need to be able to turn on/off aspect ratio lock and resize lock
+- is it really necc to have a paperclip processor?
+- use inline css or separate css
+- reset cropping when uploading new image
+- make options[:view_size] work

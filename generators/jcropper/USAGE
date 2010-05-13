@@ -1,0 +1,6 @@
+Description:
+    Generates a migration for jcropper one class's attachment. x/y/w/h crop variables
+
+Example:
+    ./script/generate jcropper class attachment
+

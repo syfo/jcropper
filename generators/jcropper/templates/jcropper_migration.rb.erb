@@ -1,0 +1,15 @@
+class <%= migration_name %> < ActiveRecord::Migration
+  def self.up
+    add_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_x, :integer, :default => 0
+    add_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_y, :integer, :default => 0
+    add_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_w, :integer, :default => 0
+    add_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_h, :integer, :default => 0
+  end
+
+  def self.down
+    remove_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_x
+    remove_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_y
+    remove_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_w
+    remove_column :<%= class_name.underscore.camelize.tableize %>, :<%= attachment %>_crop_h
+  end
+end
