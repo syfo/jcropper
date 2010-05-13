@@ -67,7 +67,7 @@ module JCropper
             if(imgAspect < containerAspect) {
               return (container[0] / img[0]);
             }
-            else
+            else {
               return (container[1] / img[1]);
             }
           }
@@ -116,7 +116,7 @@ module JCropper
       options = options.merge(default_options)
       
       <<-HTML
-      <div style="overflow:hidden;border:1px solid black;">
+      <div style="overflow:hidden;height:100px;width:100px;border:1px solid black;">
         #{image_tag(object.send(attachment).url(:original), :id => "#{options[:css_prefix]}-preview")}
       </div>
       HTML

@@ -1,0 +1,35 @@
+= Overview
+
+jcropper wraps jcrop 0.98, http://deepliquid.com/content/Jcrop.html, a javascript cropping tool. 
+
+Jcropper currently only works with paperclip.
+
+= Installation
+
+1. After adding your paperclip attachment as normal, include the jcropper processor in the style.
+
+  class User < ActiveRecord::Base
+    has_attached_file :avatar, :styles => { :thumb => "100x100>", :processors => "jcropper" }
+    ...
+  end
+
+2. Tell jcropper to crop the attachment
+ 
+  jcrop :avatar
+  
+3. Generate your migration
+
+  script/generate jcropper user avatar
+  rake db:migrate
+  
+4. Install js/css/images for jcropper 
+
+  rake js_cropper:install
+  
+5. In your view:
+
+  <%= croppable_image @user, :avatar, :thumb -%>
+  <%= croppable_image_preview @user, :avatar, :thumb -%>
+  
+
+Copyright (c) 2010 Symbolforce, LLC., released under the MIT license

@@ -1,6 +1,6 @@
 module JCropper
   module ClassMethods
-    def js_crop(attachment, options = {})
+    def jcrop(attachment, options = {})
       raise "jcropper requires attachment to be of type Paperclip::Attachment" if self.attachment_definitions[attachment.to_sym].nil?
       require File.join(ROOT, '../paperclip_processors/jcropper.rb')
       

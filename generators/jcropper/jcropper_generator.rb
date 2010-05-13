@@ -1,4 +1,4 @@
-class JCropperGenerator < Rails::Generator::NamedBase
+class JcropperGenerator < Rails::Generator::NamedBase
   attr_accessor :attachment, :migration_name
  
   def initialize(args, options = {})
