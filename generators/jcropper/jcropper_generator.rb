@@ -3,7 +3,7 @@ class JcropperGenerator < Rails::Generator::NamedBase
  
   def initialize(args, options = {})
     super
-    @class_name, @attachment = args[0], args[1]
+    @class_name, @attachment, @style = args[0], args[1], args[2]
   end
  
   def manifest    
@@ -17,6 +17,6 @@ class JcropperGenerator < Rails::Generator::NamedBase
   private 
   
   def generate_file_name
-    "add_crop_variables_for_#{@attachment}_to_#{@class_name.underscore}"
+    "add_crop_variables_for_#{@attachment}_style_#{@style}_to_#{@class_name.underscore}"
   end
 end

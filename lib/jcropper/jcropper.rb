@@ -1,13 +1,13 @@
 module JCropper
   module ClassMethods
-    def jcrop(attachment, options = {})
+    def jcrop(attachment, style, options = {})
       raise "jcropper requires attachment to be of type Paperclip::Attachment" if self.attachment_definitions[attachment.to_sym].nil?
       require File.join(ROOT, '../paperclip_processors/jcropper.rb')
       
       options[:attachment] = attachment = attachment.to_s
       options[:lock_aspect] ||= true
       
-      x, y, w, h = "#{attachment}_crop_x", "#{attachment}_crop_y", "#{attachment}_crop_w", "#{attachment}_crop_h" 
+      x, y, w, h = [:x, :y, :w, :h].map{|coord| jattr(attachment, style, coord) }
 
       class_exec(options) do |options|
         write_inheritable_attribute :jcropper_options, options.dup
@@ -38,6 +38,11 @@ module JCropper
       TO_EVAL
       class_eval to_eval
     end
+  end
+  
+  private
+  def self.jattr(attachment, style, coord)
+    "#{attachment}_#{style}_crop_#{coord}"
   end
   
   module InstanceMethods

@@ -2,6 +2,21 @@ require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
 
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gemspec|
+    gemspec.name = "jcropper"
+    gemspec.summary = "gem plugin wrapping jquery "
+    gemspec.description = ""
+    gemspec.email = "ryan@symbolforce.com"
+    gemspec.homepage = "http://github.com/syfo/jcropper"
+    gemspec.authors = ["Ryan Ziegler"]
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler not available. Install it with: gem install jeweler"
+end
+
 desc 'Default: run unit tests.'
 task :default => :test
 

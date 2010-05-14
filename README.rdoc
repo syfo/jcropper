@@ -15,11 +15,11 @@ Include the jcropper processor in the paperclip style.
 
 Tell jcropper to crop the paperclip attachment
  
-  jcrop :avatar
+  jcrop :avatar, :thumb
   
 Generate and install your migration
 
-  script/generate jcropper user avatar
+  script/generate jcropper user avatar thumb
   rake db:migrate
   
 Install js/css/images for jcropper 
