@@ -1,6 +1,6 @@
 Description:
-    Generates a migration for jcropper one class's attachment. x/y/w/h crop variables
+    Generates a migration for jcropper corresponding to one attachment and one style. Creates fields on the model to save the crop rectangle.
 
-Example:
-    ./script/generate jcropper class attachment
+Usage:
+    ./script/generate jcropper <model> <attachment> <style>
 

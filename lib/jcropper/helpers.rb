@@ -2,132 +2,133 @@ module JCropper
   module Helpers
     def croppable_image(object_name, attachment, style, options = {})
       object = eval("@#{object_name.to_s}") unless object_name.is_a? ActiveRecord::Base
-      paperclip_options = object.send(attachment).styles[style.to_sym]
-      options = options.merge(default_options)
+      return unless options = default_options(object, attachment, style, options)
 
-      x, y, w, h = ['x', 'y', 'w', 'h'].map{|v| "#{attachment}_crop_#{v}"}
-      
-      target_geometry = Paperclip::Geometry.parse(paperclip_options[:geometry])
-      file_geometry = Paperclip::Geometry.from_file(object.send(attachment).path(:original))
-      options[:view_size] ||= {:width => file_geometry.width, :height => file_geometry.height}
-
-      resized_ratio = options[:view_size][:width] / file_geometry.width 
-
-      s = "<div class='#{options[:css_prefix]}'>#{image_tag(object.send(attachment).url, options[:view_size])}</div>" + "\n"
-      s += hidden_field_tag("#{object_name}[#{x}]", object.send(x), :id => x) + "\n"
-      s += hidden_field_tag("#{object_name}[#{y}]", object.send(y), :id => y) + "\n"
-      s += hidden_field_tag("#{object_name}[#{w}]", object.send(w), :id => w) + "\n"
-      s += hidden_field_tag("#{object_name}[#{h}]", object.send(h), :id => h) + "\n"
-      s += <<-CSS
-        <style type="text/css">
-          /* Fixes issue here http://code.google.com/p/jcrop/issues/detail?id=1 */
-          .jcrop-holder { text-align: left; }
-
-          .jcrop-vline, .jcrop-hline
-          {
-          	font-size: 0;
-          	position: absolute;
-          	background: white url('Jcrop.gif') top left repeat;
-          }
-          .jcrop-vline { height: 100%; width: 1px !important; }
-          .jcrop-hline { width: 100%; height: 1px !important; }
-          .jcrop-handle {
-          	font-size: 1px;
-          	width: 7px !important;
-          	height: 7px !important;
-          	border: 1px #eee solid;
-          	background-color: #333;
-          	*width: 9px;
-          	*height: 9px;
-          }
-
-          .jcrop-tracker { width: 100%; height: 100%; }
-
-          .custom .jcrop-vline,
-          .custom .jcrop-hline
-          {
-          	background: yellow;
-          }
-          .custom .jcrop-handle
-          {
-          	border-color: black;
-          	background-color: #C7BB00;
-          	-moz-border-radius: 3px;
-          	-webkit-border-radius: 3px;
-          }
-        </style>
-      CSS
-      
-      s += <<-HTML
-        <script type='text/javascript'>
-          function findBoundingScale(img, container) {
-            imgAspect = img[0] / img[1]
-            containerAspect = container[0] / container[1]
-      
-            if(imgAspect < containerAspect) {
-              return (container[0] / img[0]);
-            }
-            else {
-              return (container[1] / img[1]);
-            }
-          }
+      s = "<div class='#{options[:css_prefix]}'>#{image_tag(object.send(attachment).url, options[:view_size].merge(:id => options[:id]))}</div>" + "\n"
+      s += hidden_field_tag("#{object_name}[#{@c_i.coord_names[:x]}]", @c_i.starting_crop[:x], :id => @c_i.coord_names[:x]) + "\n"
+      s += hidden_field_tag("#{object_name}[#{@c_i.coord_names[:y]}]", @c_i.starting_crop[:y], :id => @c_i.coord_names[:y]) + "\n"
+      s += hidden_field_tag("#{object_name}[#{@c_i.coord_names[:w]}]", @c_i.starting_crop[:w], :id => @c_i.coord_names[:w]) + "\n"
+      s += hidden_field_tag("#{object_name}[#{@c_i.coord_names[:h]}]", @c_i.starting_crop[:h], :id => @c_i.coord_names[:h]) + "\n"
+      (s += common_js(options)) and (@common_js_included = true) unless @common_js_included
+      s += <<-JS         
+        <script type="text/javascript">
+          var cropImageScale = findBoundingScale([#{options[:view_size][:width]}, #{options[:view_size][:height]}], 
+                                                 [#{@c_i.original_geometry.width}, #{@c_i.original_geometry.height}])
+                    
+          $('.#{options[:css_prefix]} img').attr('width', parseInt(cropImageScale*#{@c_i.original_geometry.width}));
+          $('.#{options[:css_prefix]} img').attr('height', parseInt(cropImageScale*#{@c_i.original_geometry.height}));
         
-          $('.#{options[:css_prefix]} img').load(function() {
-            var trueWidth = #{file_geometry.width};
-            var trueHeight = #{file_geometry.height};
-        
-            var targetWidth = #{target_geometry.width};
-            var targetHeight = #{target_geometry.height};
-                
-            function cropOnChange(coords) {
-              var rx = $('##{options[:css_prefix]}-preview').parent().width() / coords.w;
-              var ry = $('##{options[:css_prefix]}-preview').parent().height() / coords.h;
-
-              $('##{options[:css_prefix]}-preview').css({
-                      width: Math.round(rx * trueWidth) + 'px',
-                      height: Math.round(ry * trueHeight) + 'px',
-                      marginLeft: '-' + Math.round(rx * coords.x) + 'px',
-                      marginTop: '-' + Math.round(ry * coords.y) + 'px'
-              });
-        
-              $('##{x}').val(coords.x);
-              $('##{y}').val(coords.y);
-              $('##{w}').val(coords.w);
-              $('##{h}').val(coords.h);
-              console.log(coords);
-            }
-
-            api = $('.#{options[:css_prefix]} img').Jcrop({
-              #{options[:jcrop_options].map{|k,v| "#{k.to_s}: #{v.to_s},\n"}}
-              setSelect: #{[object.send(x), object.send(y), 
-                              object.send(x) + object.send(w), object.send(y) + object.send(h)].map {|v| v*resized_ratio}.to_json},
+          $(window).load(function() {
+            #{options[:jcrop_object]} = $.Jcrop('.#{options[:css_prefix]} img', {
               onChange: cropOnChange,
               onSelect: cropOnChange,
-  //            aspectRatio: targetWidth / targetHeight,
-              trueSize: [trueWidth, trueHeight]
+              #{options[:jcrop_options].map{|k,v| "#{k.to_s}: #{v.to_json},\n"}}
             });
           });
         </script>
-      HTML
+      JS
     end
     
     def croppable_image_preview(object_name, attachment, style, options = {})
       object = eval("@#{object_name.to_s}") unless object_name.is_a? ActiveRecord::Base      
-      options = options.merge(default_options)
+      options[:preview_size] = options.delete(:view_size)
+      return unless options = default_options(object, attachment, style, options)
       
-      <<-HTML
-      <div style="overflow:hidden;height:100px;width:100px;border:1px solid black;">
-        #{image_tag(object.send(attachment).url(:original), :id => "#{options[:css_prefix]}-preview")}
+      s = <<-HTML
+      <div style="overflow:hidden;height:#{options[:preview_size][:height]}px;width:#{options[:preview_size][:width]}px;" class="#{options[:css_prefix]}-preview-mask">
+        #{image_tag(object.send(attachment).url(:original), :class => "#{options[:css_prefix]}-preview")}
       </div>
       HTML
+      (s += common_js(options)) and (@common_js_included = true) unless @common_js_included
+      s
     end
     
     private
-    def default_options
-      {
-        :css_prefix => 'js_crop',
-        :jcrop_options => {}
+    def common_js(options)
+      <<-HTML
+        <script type="text/javascript">
+          function cropOnChange(coords) {
+            if(typeof updatePreview == 'function') {
+              updatePreview(coords);
+            }
+
+            $('##{@c_i.coord_names[:x]}').val(coords.x);
+            $('##{@c_i.coord_names[:y]}').val(coords.y);
+            $('##{@c_i.coord_names[:w]}').val(coords.w);
+            $('##{@c_i.coord_names[:h]}').val(coords.h);
+          }
+
+          function updatePreview(coords) {
+            if(coords.x == NaN) { return; }
+
+            var previewMask = $('.#{options[:css_prefix]}-preview').parent();
+            var rx = previewMask.width() / coords.w;
+            var ry = previewMask.height() / coords.h;
+            var scale = findBoundingScale([#{options[:view_size][:width]}, #{options[:view_size][:height]}], [coords.w, coords.h])
+
+            previewMask.css({
+              width: Math.round(scale * coords.w) + 'px',
+              height: Math.round(scale * coords.h) + 'px',
+            });
+          
+            $('.#{options[:css_prefix]}-preview').css({
+                    width: Math.round(scale * #{@c_i.original_geometry.width}) + 'px',
+                    height: Math.round(scale * #{@c_i.original_geometry.height}) + 'px',
+                    marginLeft: '-' + Math.round(scale * coords.x) + 'px',
+                    marginTop: '-' + Math.round(scale * coords.y) + 'px'
+            });
+          }
+
+          function findBoundingScale(container, toContain) { /* [width, height] arrays */
+            toContainAspect = toContain[0] / toContain[1]
+            containerAspect = container[0] / container[1]
+    
+            if(toContainAspect > containerAspect) {
+              return (container[0] / toContain[0]);
+            }
+            else {
+              return (container[1] / toContain[1]);
+            }
+          }
+        </script>
+      HTML
+    end
+    
+    def find_bounding_scale(container, to_contain)
+      to_contain_aspect = to_contain[0] / to_contain[1]
+      container_aspect = container[0] / container[1]
+
+      if to_contain_aspect > container_aspect
+        return (container[0] / to_contain[0]);
+      else
+        return (container[1] / to_contain[1]);
+      end
+    end
+    
+    def default_options(object, attachment, style, options = {})
+      @c_i ||= object.cropped_image
+      
+      options = {
+        :css_prefix => 'jcrop',
+        :jcrop_object => 'jcrop_api',
+        :view_size => {:width => @c_i.original_geometry.width, :height => @c_i.original_geometry.height},
+        :preview_size => {:width => @c_i.original_geometry.width, :height => @c_i.original_geometry.height},
+        :aspect_ratio => @c_i.target_geometry.width / @c_i.target_geometry.height,
+      }.merge(options)
+
+      scale = find_bounding_scale([options[:view_size][:width], options[:view_size][:height]], 
+                                  [@c_i.original_geometry.width, @c_i.original_geometry.height])
+
+      options[:jcrop_options] = {
+        :setSelect => [ @c_i.starting_crop[:x] * scale, 
+                        @c_i.starting_crop[:y] * scale, 
+                        @c_i.starting_crop[:x] + @c_i.starting_crop[:w] * scale,
+                        @c_i.starting_crop[:y] + @c_i.starting_crop[:h] * scale
+                       ],
+        :trueSize  => [@c_i.original_geometry.width, @c_i.original_geometry.height]
       }
+      
+      options
     end
   end
 end

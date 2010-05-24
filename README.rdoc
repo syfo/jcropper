@@ -1,10 +1,14 @@
 = Overview
 
-jcropper wraps jcrop 0.98, http://deepliquid.com/content/Jcrop.html, a javascript cropping tool. 
+jcropper wraps jcrop 0.98, http://deepliquid.com/content/Jcrop.html, an in-browser cropping tool, to allow users to crop attached images. It currently only works with paperclip.
 
-jcropper currently only works with paperclip.
+(note, there is also another jcrop plugin, http://github.com/jschwindt/rjcrop)
 
 = Installation
+
+Install as a plugin (gem to come soon)
+
+  script/plugin install git://github.com/syfo/jcropper.git
 
 Include the jcropper processor in the paperclip style.
 
@@ -24,7 +28,11 @@ Generate and install your migration
   
 Install js/css/images for jcropper 
 
-  rake js_cropper:install
+  rake jcropper:install
+  
+Add the headers to your view or layout (jquery required)
+  <%= javascript_include_tag 'jquery.Jcrop.min.js' %>
+  <%= stylesheet_link_tag 'jquery.Jcrop.css' %>
   
 Add the helpers to your view:
 

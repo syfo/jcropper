@@ -1,5 +1,5 @@
 module Paperclip
-  class JCropper < Thumbnail
+  class Jcropper < Thumbnail
     def transformation_command
       scale, crop = @current_geometry.transformation_to(@target_geometry, crop?)
       trans = ''
