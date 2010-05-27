@@ -32,12 +32,20 @@ Install js/css/images for jcropper
   
 Add the headers to your view or layout (jquery required)
   <%= javascript_include_tag 'jquery.Jcrop.min.js' %>
+  <%= javascript_include_tag 'jcropper.js' %>
   <%= stylesheet_link_tag 'jquery.Jcrop.css' %>
   
 Add the helpers to your view:
 
   <%= croppable_image @user, :avatar, :thumb -%>
   <%= croppable_image_preview @user, :avatar, :thumb -%>
+  
+  Helper Options:
+    :css_prefix => 'jcrop'
+    :width => 100, :height => 100
+    :js_object => 'MyGlobalJsObject',
+    :aspect_ratio => 2
+    :aspect_ratio => false
   
 
 Copyright (c) 2010 Symbolforce, LLC., released under the MIT license
