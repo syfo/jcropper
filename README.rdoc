@@ -14,7 +14,11 @@ Install plugin or gem
     
   gem install jcropper
   in environment.rb: config.gem 'jcropper'
-  in config/preinitializer.rb or #{RAILS_ROOT}/Rakefile: require 'jcropper/tasks'
+  in config/preinitializer.rb or #{RAILS_ROOT}/Rakefile
+  
+    begin
+     require 'jcropper/tasks'
+    rescue LoadError; end
 
 Include the jcropper processor in the paperclip style.
 
