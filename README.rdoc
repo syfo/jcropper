@@ -6,9 +6,15 @@ jcropper wraps jcrop 0.98, http://deepliquid.com/content/Jcrop.html, an in-brows
 
 = Installation
 
-Install as a plugin (gem to come soon)
+Install plugin or gem
 
   script/plugin install git://github.com/syfo/jcropper.git
+  
+    or
+    
+  gem install jcropper
+  in environment.rb: config.gem 'jcropper'
+  in config/preinitializer.rb or #{RAILS_ROOT}/Rakefile: require 'jcropper/tasks'
 
 Include the jcropper processor in the paperclip style.
 
@@ -43,9 +49,18 @@ Add the helpers to your view:
   Helper Options:
     :css_prefix => 'jcrop'
     :width => 100, :height => 100
-    :js_object => 'MyGlobalJsObject',
+    :js_object => 'croppedImage',
     :aspect_ratio => 2
     :aspect_ratio => false
-  
+
+= Notes
+
+- jcropper currently only supports ONE cropped style per attachment, one cropped attachment per model
+- croppedImage.jcrop gets you the jcrop api object (see jcrop docs)
+- in helpers, :aspect_ratio defaults to the aspect ratio of the original image
+- in helpers, width and height default to the target geometry for the style
+- you'll have to read the jcropper.js source for function docs there
+- tried only on rails 2.3.5 and ruby 1.8.7
+- test/code ratio is 0
 
 Copyright (c) 2010 Symbolforce, LLC., released under the MIT license
