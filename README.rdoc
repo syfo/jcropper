@@ -46,12 +46,11 @@ Add the helpers to your view:
   <%= croppable_image @user, :avatar, :thumb -%>
   <%= croppable_image_preview @user, :avatar, :thumb -%>
   
-  Helper Options:
-    :css_prefix => 'jcrop'
-    :width => 100, :height => 100
-    :js_object => 'croppedImage',
-    :aspect_ratio => 2
-    :aspect_ratio => false
+Helper Options:
+  :css_prefix => 'jcrop',
+  :width => 100, :height => 100,
+  :js_object => 'croppedImage',
+  :aspect_ratio => false
 
 = Notes
 
