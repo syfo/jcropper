@@ -3,15 +3,15 @@ module JCropper
     def jcrop(attachment, style)
       raise "jcropper requires attachment to be of type Paperclip::Attachment" if self.attachment_definitions[attachment.to_sym].nil?
       
-      class_exec(attachment, style) do |attachment, style|
-        attr_reader :cropped_image
-        write_inheritable_hash :jcropper_defs, {:attachment => attachment, :style => style} 
-        class_inheritable_reader :jcropper_defs
+      attr_reader :cropped_image
+      write_inheritable_hash :jcropper_defs, {:attachment => attachment, :style => style} 
+      class_inheritable_reader :jcropper_defs
+      attr_accessor :jcropper_should_reprocess
+      before_save :jcropper_normalize_crop, :jcropper_check_for_reprocess
+      after_save :jcropper_reprocess
 
-        attr_accessor :jcropper_should_reprocess
-        before_save :jcropper_normalize_crop, :jcropper_check_for_reprocess
-        after_save :jcropper_reprocess
-        
+      x, y, w, h = [:x, :y, :w, :h].map{|coord| JCropper.jattr(attachment, style, coord) }
+      to_eval = <<-TO_EVAL
         ###CRZ - alias chain this
         def after_initialize
           @cropped_image = CroppedImage.new(self)
@@ -20,10 +20,7 @@ module JCropper
         def jcropper_reprocess
           cropped_image.attachment.reprocess! if @jcropper_should_reprocess
         end
-      end
 
-      x, y, w, h = [:x, :y, :w, :h].map{|coord| JCropper.jattr(attachment, style, coord) }
-      to_eval = <<-TO_EVAL
         def jcropper_check_for_reprocess
           @jcropper_should_reprocess ||= !(changed & %w(#{x} #{y} #{w} #{h})).empty?
           true
