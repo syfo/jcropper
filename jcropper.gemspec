@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
      "generators/jcropper/jcropper_generator.rb",
      "generators/jcropper/templates/jcropper_migration.rb.erb",
      "install.rb",
+     "jcropper.gemspec",
      "lib/jcropper.rb",
      "lib/jcropper/cropped_image.rb",
      "lib/jcropper/helpers.rb",
