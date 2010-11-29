@@ -30,7 +30,7 @@ CroppedImage = function(image, properties) {
   t.log = function() {
     try {
       if(typeof console == 'object' && typeof console.log == 'function') {
-        console.log.apply(this, arguments);
+        console.log.apply(console, arguments);
       }
     } catch(e) {;}
   }
