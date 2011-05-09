@@ -50,6 +50,11 @@ Add the helpers to your view:
   <%= croppable_image @user, :avatar, :thumb -%>
   <%= croppable_image_preview @user, :avatar, :thumb -%>
   
+  Optional syntax, with :user being the name for the form submit.
+  <%= croppable_image [@site.user, :user], :avatar, :thumb -%>
+  <%= croppable_image_preview [@site.user, :user], :avatar, :thumb -%>
+
+  
 Helper Options:
   :css_prefix => 'jcrop',
   :width => 100, :height => 100,
@@ -61,7 +66,7 @@ Helper Options:
 - jcropper currently only supports ONE cropped style per attachment, one cropped attachment per model
 - croppedImage.jcrop gets you the jcrop api object (see jcrop docs)
 - in helpers, :aspect_ratio defaults to the aspect ratio of the original image
-- in helpers, width and height default to the target geometry for the style
+- in helpers, width and height default to the target geometry for the style. if you override one of width/height you must override both
 - you'll have to read the jcropper.js source for function docs there
 - tried only on rails 2.3.5 and ruby 1.8.7
 - test/code ratio is 0

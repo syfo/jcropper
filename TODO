@@ -18,3 +18,4 @@
 - use inline css or separate css
 - reset cropping when uploading new image
 - make options[:view_size] work
+- add a crop_updated_at field

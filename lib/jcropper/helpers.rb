@@ -1,8 +1,8 @@
 module JCropper 
   module Helpers
-    def croppable_image(object_name, attachment, style, options = {})
-      object = eval("@#{object_name.to_s}") unless object_name.is_a? ActiveRecord::Base
-      options[:view_size] = {:width => options.delete(:width), :height => options.delete(:height)}
+    def croppable_image(object_and_name, attachment, style, options = {})
+      object, name = split_object_and_name(object_and_name)
+      options[:view_size] = {:width => options.delete(:width), :height => options.delete(:height)} if options[:width] and options[:height]
       return unless options = parse_options(object, options)
 
       ###CRZ - duplicated in JS!
@@ -11,13 +11,13 @@ module JCropper
 
       scaled_img_dims = {:width => options[:original_geometry][:width]*view_scale, :height => options[:original_geometry][:height]*view_scale}
       s = "<div class='#{options[:css_prefix]}'>#{image_tag(object.send(attachment).url, scaled_img_dims.merge(:id => options[:id]))}</div>" + "\n"
-      s += hidden_field_tag("#{object_name}[#{@js_cropper_c_i.coord_names[:x]}]", @js_cropper_c_i.starting_crop[:x], :id => @js_cropper_c_i.coord_names[:x]) + "\n"
-      s += hidden_field_tag("#{object_name}[#{@js_cropper_c_i.coord_names[:y]}]", @js_cropper_c_i.starting_crop[:y], :id => @js_cropper_c_i.coord_names[:y]) + "\n"
-      s += hidden_field_tag("#{object_name}[#{@js_cropper_c_i.coord_names[:w]}]", @js_cropper_c_i.starting_crop[:w], :id => @js_cropper_c_i.coord_names[:w]) + "\n"
-      s += hidden_field_tag("#{object_name}[#{@js_cropper_c_i.coord_names[:h]}]", @js_cropper_c_i.starting_crop[:h], :id => @js_cropper_c_i.coord_names[:h]) + "\n"
+      s += hidden_field_tag("#{name}[#{@js_cropper_c_i.coord_names[:x]}]", @js_cropper_c_i.starting_crop[:x], :id => @js_cropper_c_i.coord_names[:x]) + "\n"
+      s += hidden_field_tag("#{name}[#{@js_cropper_c_i.coord_names[:y]}]", @js_cropper_c_i.starting_crop[:y], :id => @js_cropper_c_i.coord_names[:y]) + "\n"
+      s += hidden_field_tag("#{name}[#{@js_cropper_c_i.coord_names[:w]}]", @js_cropper_c_i.starting_crop[:w], :id => @js_cropper_c_i.coord_names[:w]) + "\n"
+      s += hidden_field_tag("#{name}[#{@js_cropper_c_i.coord_names[:h]}]", @js_cropper_c_i.starting_crop[:h], :id => @js_cropper_c_i.coord_names[:h]) + "\n"
       s += <<-JS
         <script type="text/javascript">
-          #{options[:js_object]} = new CroppedImage(jQuery('.#{options[:css_prefix]} img'),
+          #{options[:js_object]} = new CroppedImage('.#{options[:css_prefix]} img',
             $.extend(
               #{camelize_keys(options).to_json},
               {
@@ -28,12 +28,13 @@ module JCropper
           );
         </script>
       JS
-      s
+      
+      respond_to?(:raw) ? raw(s) : s
     end
     
-    def croppable_image_preview(object_name, attachment, style, options = {})
-      object = eval("@#{object_name.to_s}") unless object_name.is_a? ActiveRecord::Base      
-      options[:preview_size] = {:width => options.delete(:width), :height => options.delete(:height)}
+    def croppable_image_preview(object_and_name, attachment, style, options = {})
+      object, name = split_object_and_name(object_and_name)
+      options[:preview_size] = {:width => options.delete(:width), :height => options.delete(:height)} if options[:width] and options[:height]
       return unless options = parse_options(object, options)
       
       s = <<-HTML
@@ -41,7 +42,7 @@ module JCropper
         #{image_tag(@js_cropper_c_i.attachment.url(:original), :class => "#{options[:css_prefix]}-preview")}
       </div>
       HTML
-      s
+      respond_to?(:raw) ? raw(s) : s
     end
     
     private
@@ -62,6 +63,13 @@ module JCropper
       end
     end
     
+    def split_object_and_name(object_and_name)
+      if object_and_name.is_a? Array
+        object_and_name
+      else
+        [eval("@#{object_and_name.to_s}"), object_and_name]
+      end
+    end
     
     def parse_options(object, options = {})
       @js_cropper_c_i ||= object.cropped_image
