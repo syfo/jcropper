@@ -22,12 +22,23 @@ module JCropper
       after_save :jcropper_reprocess
 
       x, y, w, h = [:x, :y, :w, :h].map{|coord| JCropper.jattr(attachment, style, coord) }
-      to_eval = <<-TO_EVAL
-        ###CRZ - alias chain this
-        def after_initialize
-          @cropped_image = CroppedImage.new(self, #{options.to_hash})
-        end
-        
+      if defined?(Rails) and Rails.version.split('.').first.to_i > 2
+        to_eval = <<-TO_EVAL
+          after_initialize :jcropper_initialize
+          def jcropper_initialize
+            @cropped_image = CroppedImage.new(self, #{options.to_hash})
+          end
+        TO_EVAL
+      else
+        to_eval = <<-TO_EVAL
+          ###CRZ - alias chain this
+          def after_initialize
+            @cropped_image = CroppedImage.new(self, #{options.to_hash})
+          end
+        TO_EVAL
+      end        
+
+      to_eval += <<-TO_EVAL
         def jcropper_reprocess
           cropped_image.attachment.reprocess! if @jcropper_should_reprocess
         end
