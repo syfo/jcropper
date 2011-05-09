@@ -6,7 +6,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gemspec|
     gemspec.name = "jcropper"
-    gemspec.summary = "gem plugin wrapping jquery "
+    gemspec.summary = "gem plugin wrapping jquery.jcrop.js "
     gemspec.description = ""
     gemspec.email = "ryan@symbolforce.com"
     gemspec.homepage = "http://github.com/syfo/jcropper"

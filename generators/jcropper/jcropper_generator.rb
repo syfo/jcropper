@@ -1,10 +1,14 @@
 class JcropperGenerator < Rails::Generator::NamedBase
-  attr_accessor :attachment, :migration_name, :style
+  attr_accessor :attachment, :style
  
   def initialize(args, options = {})
     super
     raise "Incorrect usage!" unless args.length == 3
     @class_name, @attachment, @style = args[0], args[1], args[2]
+  end
+ 
+  def migration_name
+    @migration_name.underscore
   end
  
   def manifest    

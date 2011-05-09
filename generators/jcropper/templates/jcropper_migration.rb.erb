@@ -1,4 +1,4 @@
-class <%= migration_name %> < ActiveRecord::Migration
+class <%= migration_name.camelize %> < ActiveRecord::Migration
   def self.up
     add_column :<%= class_name.underscore.camelize.tableize %>, :<%= JCropper.jattr attachment, style, :x %>, :integer, :default => 0
     add_column :<%= class_name.underscore.camelize.tableize %>, :<%= JCropper.jattr attachment, style, :y %>, :integer, :default => 0
