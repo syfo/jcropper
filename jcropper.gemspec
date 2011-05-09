@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{jcropper}
-  s.version = "0.3.3"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ryan Ziegler"]
-  s.date = %q{2010-06-11}
+  s.date = %q{2011-05-09}
   s.description = %q{}
   s.email = %q{ryan@symbolforce.com}
   s.extra_rdoc_files = [
@@ -28,18 +28,20 @@ Gem::Specification.new do |s|
      "generators/jcropper/templates/jcropper_migration.rb.erb",
      "install.rb",
      "jcropper.gemspec",
+     "lib/generators/jcropper/jcropper_generator.rb",
      "lib/jcropper.rb",
      "lib/jcropper/cropped_image.rb",
      "lib/jcropper/helpers.rb",
      "lib/jcropper/jcropper.rb",
      "lib/jcropper/tasks.rb",
      "lib/paperclip_processors/jcropper.rb",
+     "lib/railtie.rb",
+     "lib/tasks/jcropper.rake",
      "public/images/Jcrop.gif",
      "public/javascripts/jcropper.js",
      "public/javascripts/jquery.Jcrop.min.js",
      "public/stylesheets/jquery.Jcrop.css",
      "rails/init.rb",
-     "tasks/jcropper.rake",
      "test/jcropper_test.rb",
      "test/test_helper.rb",
      "uninstall.rb"
@@ -48,7 +50,7 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{gem plugin wrapping jquery}
+  s.summary = %q{gem plugin wrapping jquery.jcrop.js}
   s.test_files = [
     "test/jcropper_test.rb",
      "test/test_helper.rb"
