@@ -1,6 +1,17 @@
 module JCropper
+  def self.find_bounding_scale(container, to_contain)
+    to_contain_aspect = to_contain[0].to_f / to_contain[1]
+    container_aspect = container[0].to_f / container[1]
+
+    if to_contain_aspect > container_aspect
+      return (container[0].to_f / to_contain[0]);
+    else
+      return (container[1].to_f / to_contain[1]);
+    end
+  end
+  
   module ClassMethods
-    def jcrop(attachment, style)
+    def jcrop(attachment, style, options = {})
       raise "jcropper requires attachment to be of type Paperclip::Attachment" if self.attachment_definitions[attachment.to_sym].nil?
       
       attr_reader :cropped_image
@@ -14,7 +25,7 @@ module JCropper
       to_eval = <<-TO_EVAL
         ###CRZ - alias chain this
         def after_initialize
-          @cropped_image = CroppedImage.new(self)
+          @cropped_image = CroppedImage.new(self, #{options.to_hash})
         end
         
         def jcropper_reprocess

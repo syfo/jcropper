@@ -6,7 +6,7 @@ module JCropper
       return unless options = parse_options(object, options)
 
       ###CRZ - duplicated in JS!
-      view_scale = find_bounding_scale([options[:view_size][:width], options[:view_size][:height]],
+      view_scale = JCropper.find_bounding_scale([options[:view_size][:width], options[:view_size][:height]],
                     [options[:original_geometry][:width], options[:original_geometry][:height]])
 
       scaled_img_dims = {:width => options[:original_geometry][:width]*view_scale, :height => options[:original_geometry][:height]*view_scale}
@@ -51,18 +51,7 @@ module JCropper
         h.merge(pair[0].to_s.camelize(:lower) => pair[1])
       end
     end
-    
-    def find_bounding_scale(container, to_contain)
-      to_contain_aspect = to_contain[0].to_f / to_contain[1]
-      container_aspect = container[0].to_f / container[1]
-
-      if to_contain_aspect > container_aspect
-        return (container[0].to_f / to_contain[0]);
-      else
-        return (container[1].to_f / to_contain[1]);
-      end
-    end
-    
+        
     def split_object_and_name(object_and_name)
       if object_and_name.is_a? Array
         object_and_name
@@ -84,7 +73,8 @@ module JCropper
         :aspect_ratio => @js_cropper_c_i.target_geometry.width / @js_cropper_c_i.target_geometry.height,
         :original_geometry => {:width => @js_cropper_c_i.original_geometry.width, :height => @js_cropper_c_i.original_geometry.height},
         :starting_crop => @js_cropper_c_i.starting_crop,
-        :js_object => 'croppedImage'
+        :js_object => 'croppedImage' + SecureRandom.hex(10),
+        :jcrop_options => @js_cropper_c_i.options[:maintain_aspect_ratio] ? {:aspectRatio => @js_cropper_c_i.target_geometry.width / @js_cropper_c_i.target_geometry.height} : {}
       }.merge(@js_cropper_options.merge(options))
     end
   end
