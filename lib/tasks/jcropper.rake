@@ -1,7 +1,7 @@
 namespace :jcropper do
   desc "Install .CSS and .js files required for view helpers to function. Will not overwrite"
   task :install => :environment do
-    root = File.join(File.dirname(__FILE__), '..')
+    root = File.join(File.dirname(__FILE__), '../../')
     install_file(File.join(root, 'public/images/Jcrop.gif'), File.join(Rails.root, 'public/images/Jcrop.gif'))
     install_file(File.join(root, 'public/javascripts/jquery.Jcrop.min.js'), File.join(Rails.root, 'public/javascripts/jquery.Jcrop.min.js'))
     install_file(File.join(root, 'public/javascripts/jcropper.js'), File.join(Rails.root, 'public/javascripts/jcropper.js'))
