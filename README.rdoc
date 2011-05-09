@@ -68,7 +68,8 @@ Helper Options:
 - in helpers, :aspect_ratio defaults to the aspect ratio of the original image
 - in helpers, width and height default to the target geometry for the style. if you override one of width/height you must override both
 - you'll have to read the jcropper.js source for function docs there
-- tried only on rails 2.3.5 and ruby 1.8.7
+- should be working on ruby 1.8/1.9 and rails 2.3/3, although it has not been thoroughly tested
+- jcrop :avatar, :thumb, :maintain_aspect_ratio => true will lock aspect_ratio to the target geometry and default to a north/center max crop
 - test/code ratio is 0
 
 Copyright (c) 2010 Symbolforce, LLC., released under the MIT license
