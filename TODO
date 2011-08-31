@@ -19,3 +19,12 @@
 - reset cropping when uploading new image
 - make options[:view_size] work
 - add a crop_updated_at field
+- all these class_eval's in ClassMethods#jcrop really want to be class_exec's! but this is 1.9. so we have to do this:
+        to_eval = <<-TO_EVAL
+          after_initialize :jcropper_initialize
+          def jcropper_initialize
+            @cropped_image = CroppedImage.new(self, #{options.inspect})
+          end
+        TO_EVAL
+        
+  and that only works if options.inspect renders ruby code, which it is not guaranteed to do.

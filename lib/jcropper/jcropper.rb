@@ -26,14 +26,14 @@ module JCropper
         to_eval = <<-TO_EVAL
           after_initialize :jcropper_initialize
           def jcropper_initialize
-            @cropped_image = CroppedImage.new(self, #{options.to_hash})
+            @cropped_image = CroppedImage.new(self, #{options.inspect})
           end
         TO_EVAL
       else
         to_eval = <<-TO_EVAL
           ###CRZ - alias chain this
           def after_initialize
-            @cropped_image = CroppedImage.new(self, #{options.to_hash})
+            @cropped_image = CroppedImage.new(self, #{options.inspect})
           end
         TO_EVAL
       end        
