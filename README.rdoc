@@ -54,6 +54,9 @@ Add the helpers to your view:
   <%= croppable_image [@site.user, :user], :avatar, :thumb -%>
   <%= croppable_image_preview [@site.user, :user], :avatar, :thumb -%>
 
+  Optional syntax, effects same as first option
+  <%= croppable_image :user, :avatar, :thumb -%>
+  <%= croppable_image_preview :user, :avatar, :thumb -%>
   
 Helper Options:
   :css_prefix => 'jcrop',

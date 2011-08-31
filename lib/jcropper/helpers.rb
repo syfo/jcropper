@@ -55,6 +55,8 @@ module JCropper
     def split_object_and_name(object_and_name)
       if object_and_name.is_a? Array
         object_and_name
+      elsif object_and_name.is_a? ActiveRecord::Base
+        [object_and_name, object_and_name.class.model_name]
       else
         [eval("@#{object_and_name.to_s}"), object_and_name]
       end
