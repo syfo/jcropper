@@ -73,7 +73,7 @@ module JCropper
         :aspect_ratio => @js_cropper_c_i.target_geometry.width / @js_cropper_c_i.target_geometry.height,
         :original_geometry => {:width => @js_cropper_c_i.original_geometry.width, :height => @js_cropper_c_i.original_geometry.height},
         :starting_crop => @js_cropper_c_i.starting_crop,
-        :js_object => 'croppedImage' + SecureRandom.hex(10),
+        :js_object => 'croppedImage' + ActiveSupport::SecureRandom.hex(10),
         :jcrop_options => @js_cropper_c_i.options[:maintain_aspect_ratio] ? {:aspectRatio => @js_cropper_c_i.target_geometry.width / @js_cropper_c_i.target_geometry.height} : {}
       }.merge(@js_cropper_options.merge(options))
     end
